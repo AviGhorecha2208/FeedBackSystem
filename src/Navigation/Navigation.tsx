@@ -10,12 +10,13 @@ import {
   PreviewFeedBackScreen,
   FeedBackListScreen,
 } from '../Screens'
+import { Feedback } from '../Types/CommonTypes'
 
 export type RootStackParamList = {
   StartupScreen: undefined
   Dashboard: undefined
   CreateFeedBack: undefined
-  PreviewFeedBack: undefined
+  PreviewFeedBack: { feedback: Feedback; isFromCreate: boolean }
   FeedBackList: undefined
 }
 

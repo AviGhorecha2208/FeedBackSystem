@@ -2,16 +2,15 @@ import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from '
 import React, { useState } from 'react'
 import CommonHeader from '../../Components/CommonHeader'
 import { Colors } from '../../Utils/Colors'
-import { goBack } from '../../Navigation/NavigationServices'
+import { goBack, navigate } from '../../Navigation/NavigationServices'
 import CommonTextInput from '../../Components/CommonTextInput'
 import { moderateScale, scale, verticalScale } from '../../Utils/Responsive'
-import { Service, ToastType } from '../../Utils/Const'
+import { Screens, Service, ToastType } from '../../Utils/Const'
 import { CommonStylesFn } from '../../Utils/CommonStyles'
 import { Fonts } from '../../Utils/Fonts'
 import StarRating from '../../Components/StarRating'
 import MediaCapture from '../../Components/MediaCapture'
 import { ImagePickerResponse } from 'react-native-image-picker'
-import MediaPickerModal from '../../Components/Modals/MediaPickerModal'
 import CommonButton from '../../Components/CommonButton'
 import { getUniqueId, showToast } from '../../Utils/Utility'
 import { useDispatch } from 'react-redux'
@@ -44,7 +43,7 @@ const initialFeedbackState: Feedback = {
 
 const CreateFeedBackScreen = () => {
   const [feedback, setFeedback] = useState(initialFeedbackState)
-  const [showImagePicker, setShowImagePicker] = useState(false)
+
   const dispatch = useDispatch()
   const onChangeText = (key: keyof typeof initialFeedbackState, value: string | null) => {
     setFeedback({ ...feedback, [key]: value })
@@ -60,10 +59,6 @@ const CreateFeedBackScreen = () => {
 
   const onSelectRating = (rating: number) => {
     setFeedback({ ...feedback, rating })
-  }
-
-  const onPressMedia = () => {
-    setShowImagePicker(true)
   }
 
   const onImageSelected = (response: ImagePickerResponse) => {
@@ -90,7 +85,7 @@ const CreateFeedBackScreen = () => {
     } else {
       const newFeedback = { ...feedback, id: getUniqueId() }
       dispatch(createFeedback({ feedback: newFeedback }))
-      goBack()
+      navigate(Screens.PreviewFeedBack, { feedback: newFeedback, isFromCreate: true })
     }
   }
 
@@ -158,9 +153,11 @@ const CreateFeedBackScreen = () => {
           {renderServices()}
           <StarRating rating={feedback.rating ?? 0} onRatingChange={onSelectRating} />
           <MediaCapture
-            title={'Upload Video'}
-            onPress={onPressMedia}
+            title={'Record Video'}
             selectedMedia={feedback.selectedMedia}
+            onMediaSelected={onImageSelected}
+            quality={'high'}
+            maxDuration={60}
           />
           <View style={styles.buttonContainer}>
             <CommonButton
@@ -176,16 +173,6 @@ const CreateFeedBackScreen = () => {
           </View>
         </View>
       </ScrollView>
-      <MediaPickerModal
-        isVisible={showImagePicker}
-        onClose={() => setShowImagePicker(false)}
-        onMediaSelected={onImageSelected}
-        mediaType={'video'}
-        title={'Upload Video'}
-        maxDuration={60}
-        quality={'high'}
-        selectionLimit={1}
-      />
     </>
   )
 }

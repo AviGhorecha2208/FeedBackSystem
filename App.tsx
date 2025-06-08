@@ -24,7 +24,7 @@ if (!__DEV__) {
 const App = () => {
   return (
     <GestureHandlerRootView style={styles.container}>
-      <StatusBar animated={true} backgroundColor={Colors.background} barStyle={'dark-content'} />
+      <StatusBar backgroundColor={Colors.primary} barStyle={'dark-content'} />
       <SafeAreaView style={styles.container}>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>

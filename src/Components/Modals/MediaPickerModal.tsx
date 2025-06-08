@@ -23,6 +23,7 @@ interface MediaPickerModalProps {
   maxDuration?: number
   quality?: 'low' | 'medium' | 'high'
   selectionLimit?: number
+  onlyCamera?: boolean
 }
 
 const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
@@ -34,6 +35,7 @@ const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
   maxDuration = 60,
   quality = 'high',
   selectionLimit = 1,
+  onlyCamera = false,
 }) => {
   const [showCameraErrorModal, setShowCameraErrorModal] = useState<string>()
   const [showGalleryErrorModal, setShowGalleryErrorModal] = useState<string>()
@@ -41,23 +43,6 @@ const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
   const clearError = () => {
     setShowCameraErrorModal(undefined)
     setShowGalleryErrorModal(undefined)
-  }
-
-  const getModalTitle = () => {
-    if (title) {
-      return title
-    }
-
-    switch (mediaType) {
-      case 'photo':
-        return 'Select Photo'
-      case 'video':
-        return 'Select Video'
-      case 'mixed':
-        return 'Select Media'
-      default:
-        return 'Select Media'
-    }
   }
 
   const getVideoQuality = () => {
@@ -208,17 +193,19 @@ const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
         deviceHeight={SCREEN_HEIGHT}
       >
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>{getModalTitle()}</Text>
+          {title && <Text style={styles.modalTitle}>{title}</Text>}
 
           <TouchableOpacity style={styles.modalOption} onPress={onPressCamera}>
             <Icon name={'camera'} size={24} color={Colors.primary} />
             <Text style={styles.modalOptionText}>{getCameraActionText()}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.modalOption} onPress={openGallery}>
-            <Icon name={'image'} size={24} color={Colors.primary} />
-            <Text style={styles.modalOptionText}>{getGalleryActionText()}</Text>
-          </TouchableOpacity>
+          {!onlyCamera && (
+            <TouchableOpacity style={styles.modalOption} onPress={openGallery}>
+              <Icon name={'image'} size={24} color={Colors.primary} />
+              <Text style={styles.modalOptionText}>{getGalleryActionText()}</Text>
+            </TouchableOpacity>
+          )}
 
           <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
             <Text style={styles.cancelText}>{'Cancel'}</Text>

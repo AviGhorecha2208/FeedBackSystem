@@ -1,17 +1,111 @@
-import { StyleSheet, View } from 'react-native'
+import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import CommonHeader from '../../Components/CommonHeader'
 import { Colors } from '../../Utils/Colors'
-import { goBack } from '../../Navigation/NavigationServices'
+import { goBack, reset } from '../../Navigation/NavigationServices'
+import CommonTextInput from '../../Components/CommonTextInput'
+import { moderateScale, scale, verticalScale } from '../../Utils/Responsive'
+import { Screens, Service } from '../../Utils/Const'
+import { CommonStylesFn } from '../../Utils/CommonStyles'
+import { Fonts } from '../../Utils/Fonts'
+import StarRating from '../../Components/StarRating'
+import MediaCapture from '../../Components/MediaCapture'
+import CommonButton from '../../Components/CommonButton'
+import { RootStackParamList } from '../../Navigation/Navigation'
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-const PreviewFeedBackScreen = () => {
+interface Service {
+  id: number
+  name: string
+}
+
+type PreviewFeedBackScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  Screens.PreviewFeedBack
+>
+
+const PreviewFeedBackScreen = ({ route }: PreviewFeedBackScreenProps) => {
+  const { feedback, isFromCreate } = route.params
+  console.log(feedback, 'feedback')
   const onBackPress = () => {
-    goBack()
+    if (isFromCreate) {
+      reset({
+        index: 0,
+        routes: [{ name: Screens.Dashboard }],
+      })
+    } else {
+      goBack()
+    }
   }
+
+  const renderServiceItem = ({ item }: { item: (typeof Service)[0] }) => {
+    const isSelected = feedback.service?.id === item.id
+    return (
+      <View style={[styles.serviceItem, isSelected && { backgroundColor: Colors.primary }]}>
+        <Text
+          style={[
+            CommonStylesFn.text(3.5, Colors.black, Fonts.medium),
+            isSelected && { color: Colors.white },
+          ]}
+        >
+          {item.name}
+        </Text>
+      </View>
+    )
+  }
+
+  const renderServices = () => {
+    return (
+      <>
+        <Text style={styles.serviceTitle}>{'Select Service'}</Text>
+        <FlatList
+          data={Service}
+          renderItem={renderServiceItem}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
+          columnWrapperStyle={styles.serviceColumnWrapper}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.serviceContentContainer}
+        />
+      </>
+    )
+  }
+
   return (
-    <View style={styles.container}>
-      <CommonHeader title={'Preview Feedback'} leftIcon={'arrow-left'} onLeftPress={onBackPress} />
-    </View>
+    <>
+      <CommonHeader title={'Feedback Preview'} leftIcon={'arrow-left'} onLeftPress={onBackPress} />
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.subContainer}>
+          <CommonTextInput label={'Name'} placeholder={'Enter Name'} value={feedback.name} />
+          <CommonTextInput
+            label={'Mobile Number'}
+            placeholder={'Enter Mobile Number'}
+            value={feedback.mobileNumber}
+            keyboardType={'numeric'}
+            maxLength={10}
+          />
+          <CommonTextInput
+            label={'Address'}
+            placeholder={'Enter Address'}
+            value={feedback.Address}
+          />
+          {renderServices()}
+          <StarRating rating={feedback.rating ?? 0} />
+          <MediaCapture
+            title={'Record Video'}
+            disabled={true}
+            selectedMedia={feedback.selectedMedia}
+          />
+          <View style={styles.buttonContainer}>
+            <CommonButton
+              label={'Go To Dashboard'}
+              onPress={onBackPress}
+              containerStyle={styles.cancelButton}
+            />
+          </View>
+        </View>
+      </ScrollView>
+    </>
   )
 }
 
@@ -19,8 +113,44 @@ export default PreviewFeedBackScreen
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
-    width: '100%',
+    minHeight: '100%',
     backgroundColor: Colors.background,
+  },
+  subContainer: {
+    flex: 1,
+    marginTop: verticalScale(20),
+    width: '100%',
+    paddingHorizontal: scale(16),
+  },
+  serviceTitle: {
+    ...CommonStylesFn.text(3.5, Colors.primary, Fonts.medium),
+    marginBottom: verticalScale(10),
+  },
+  serviceItem: {
+    flex: 1,
+    padding: scale(10),
+    borderWidth: moderateScale(1),
+    borderColor: Colors.primary,
+    backgroundColor: Colors.accentLight,
+    borderRadius: moderateScale(10),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  serviceContentContainer: {
+    gap: verticalScale(10),
+  },
+  serviceColumnWrapper: {
+    gap: scale(10),
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: scale(10),
+    marginTop: verticalScale(20),
+  },
+  cancelButton: {
+    flex: 1,
+    backgroundColor: Colors.accent,
+    borderColor: Colors.primary,
+    borderWidth: moderateScale(1),
   },
 })

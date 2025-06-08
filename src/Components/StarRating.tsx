@@ -8,7 +8,7 @@ import { Fonts } from '../Utils/Fonts'
 
 interface StarRatingProps {
   rating: number | null
-  onRatingChange: (rating: number) => void
+  onRatingChange?: (rating: number) => void
   title?: string
 }
 
@@ -18,7 +18,11 @@ const StarRating = ({ rating, onRatingChange, title = 'Select Rating' }: StarRat
       <Text style={styles.title}>{title}</Text>
       <View style={styles.starsContainer}>
         {[1, 2, 3, 4, 5].map((star) => (
-          <TouchableOpacity key={star} onPress={() => onRatingChange(star)}>
+          <TouchableOpacity
+            key={star}
+            onPress={() => onRatingChange && onRatingChange(star)}
+            disabled={!onRatingChange}
+          >
             <Icon
               name={(rating ?? 0) >= star ? 'star' : 'star-o'}
               size={30}
