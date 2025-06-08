@@ -26,7 +26,7 @@ const CommonHeader = ({
   return (
     <View style={styles.header}>
       {leftIcon ? (
-        <IconContainer name={leftIcon} color={Colors.danger} size={20} onPress={onLeftPress} />
+        <IconContainer name={leftIcon} color={Colors.white} size={20} onPress={onLeftPress} />
       ) : (
         <View style={styles.emptyContainer} />
       )}
@@ -50,17 +50,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: scale(16),
-    paddingVertical: verticalScale(12),
-    backgroundColor: Colors.surface,
+    paddingVertical: verticalScale(5),
+    backgroundColor: Colors.primary,
     borderBottomWidth: moderateScale(1),
-    borderBottomColor: Colors.borderColor,
+    borderBottomColor: Colors.primaryLight,
   },
   title: {
     flex: 1,
     textAlign: 'center',
-    marginHorizontal: scale(8),
+    marginHorizontal: scale(10),
   },
   emptyContainer: {
-    width: moderateScale(40),
+    width: moderateScale(30),
+    height: moderateScale(30),
   },
 })

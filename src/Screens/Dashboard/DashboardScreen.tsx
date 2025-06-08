@@ -2,19 +2,31 @@ import { StyleSheet, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../../Utils/Colors'
 import CommonHeader from '../../Components/CommonHeader'
-import { scale } from '../../Utils/Responsive'
+import { scale, verticalScale } from '../../Utils/Responsive'
+import CommonButton from '../../Components/CommonButton'
+import { push } from '../../Navigation/NavigationServices'
+import { Screens } from '../../Utils/Const'
 
 const DashboardScreen = () => {
   return (
     <View style={styles.container}>
-      <CommonHeader
-        title={`Dashboard`}
-        leftIcon={''}
-        onLeftPress={() => {}}
-        rightIcon={''}
-        onRightPress={() => {}}
-      />
-      <View style={styles.subContainer}></View>
+      <CommonHeader title={'Dashboard'} />
+      <View style={styles.subContainer}>
+        <CommonButton
+          label={'Create Feedback'}
+          onPress={() => {
+            push(Screens.CreateFeedBack)
+          }}
+          leftIcon={'plus'}
+        />
+        <CommonButton
+          label={'Feedback List'}
+          onPress={() => {
+            push(Screens.FeedBackList)
+          }}
+          leftIcon={'format-list-bulleted'}
+        />
+      </View>
     </View>
   )
 }
@@ -28,8 +40,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   subContainer: {
-    height: '100%',
+    flex: 1,
     width: '100%',
     paddingHorizontal: scale(16),
+    justifyContent: 'center',
+    gap: verticalScale(16),
   },
 })

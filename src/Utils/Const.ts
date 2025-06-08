@@ -1,9 +1,9 @@
 enum Screens {
   StartupScreen = 'StartupScreen',
   Dashboard = 'Dashboard',
-  Login = 'Login',
-  Signup = 'Signup',
-  CreateSecret = 'CreateSecret',
+  CreateFeedBack = 'CreateFeedBack',
+  PreviewFeedBack = 'PreviewFeedBack',
+  FeedBackList = 'FeedBackList',
 }
 
 enum ToastType {

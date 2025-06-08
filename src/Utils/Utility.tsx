@@ -5,6 +5,7 @@ import { Fonts } from './Fonts'
 import { CommonStylesFn } from './CommonStyles'
 import { Platform } from 'react-native'
 import { ToastType } from './Const'
+import { PERMISSIONS, request, RESULTS } from 'react-native-permissions'
 
 export const toastConfig = {
   success: (props: BaseToastProps) => (
@@ -65,6 +66,34 @@ const getRandomColor = () => {
   const saturation = 70 + Math.random() * 30
   const lightness = 45 + Math.random() * 15
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`
+}
+
+export const getCameraPermission = (functionToCall: () => void) => {
+  return new Promise<boolean>((resolve, reject) => {
+    const permission = Platform.select({
+      android: PERMISSIONS.ANDROID.CAMERA,
+      ios: PERMISSIONS.IOS.CAMERA,
+    })
+
+    if (!permission) {
+      console.error('Permission not defined for the current platform')
+      resolve(false)
+      return
+    }
+
+    request(permission)
+      .then((requestResult) => {
+        if (requestResult === RESULTS.GRANTED) {
+          functionToCall()
+          resolve(requestResult === RESULTS.GRANTED)
+        }
+        reject(requestResult)
+      })
+      .catch((error) => {
+        console.log('Error requesting permission:', error)
+        reject(false)
+      })
+  })
 }
 
 export const Utility = {

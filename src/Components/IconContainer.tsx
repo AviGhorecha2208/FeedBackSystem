@@ -20,9 +20,9 @@ const IconContainer = ({
   size = 20,
   color = Colors.primary,
   containerStyle,
-  backgroundColor = Colors.cardBackground,
+  backgroundColor = Colors.primary,
   showBorder = true,
-  borderColor = Colors.borderColor,
+  borderColor = Colors.white,
   onPress,
 }: IconContainerProps) => {
   return (
@@ -33,8 +33,8 @@ const IconContainer = ({
           // eslint-disable-next-line react-native/no-inline-styles
           {
             backgroundColor,
-            width: moderateScale(size + 20),
-            height: moderateScale(size + 20),
+            width: moderateScale(size + 10),
+            height: moderateScale(size + 10),
             borderWidth: showBorder ? moderateScale(1) : 0,
             borderColor: borderColor,
           },
@@ -51,12 +51,10 @@ export default IconContainer
 
 const styles = StyleSheet.create({
   container: {
-    // width: moderateScale(40),
-    // height: moderateScale(40),
     borderRadius: moderateScale(20),
-    backgroundColor: Colors.cardBackground,
+    backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: Colors.borderColor,
+    borderColor: Colors.white,
   },
 })

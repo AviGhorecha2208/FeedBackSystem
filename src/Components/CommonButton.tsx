@@ -1,11 +1,9 @@
 import {
   ActivityIndicator,
-  Image,
-  ImageStyle,
-  Pressable,
   StyleSheet,
   Text,
   TextStyle,
+  TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native'
@@ -14,6 +12,7 @@ import { moderateScale, scale, verticalScale } from '../Utils/Responsive'
 import { Colors } from '../Utils/Colors'
 import { CommonStylesFn } from '../Utils/CommonStyles'
 import { Fonts } from '../Utils/Fonts'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 interface CommonButtonProps {
   label: string
@@ -23,8 +22,7 @@ interface CommonButtonProps {
   isDisabled?: boolean
   isLoading?: boolean
   onPress: () => void
-  leftIcon?: any
-  leftIconStyle?: ImageStyle
+  leftIcon?: string
 }
 
 const CommonButton = ({
@@ -36,16 +34,22 @@ const CommonButton = ({
   isLoading,
   onPress,
   leftIcon,
-  leftIconStyle,
 }: CommonButtonProps) => {
   return (
     <View style={[styles.container, containerStyle, isDisabled && disabledStyle]}>
-      <Pressable
-        style={styles.pressableContainer}
+      <TouchableOpacity
+        style={styles.touchableContainer}
         onPress={onPress}
         disabled={isLoading || isDisabled}
       >
-        {leftIcon && <Image source={leftIcon} style={[styles.leftIcon, leftIconStyle]} />}
+        {leftIcon && (
+          <Icon
+            name={leftIcon}
+            size={moderateScale(24)}
+            color={Colors.white}
+            style={styles.leftIcon}
+          />
+        )}
         {isLoading ? (
           <ActivityIndicator size={'small'} color={Colors.white} />
         ) : (
@@ -53,7 +57,7 @@ const CommonButton = ({
             {label}
           </Text>
         )}
-      </Pressable>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -69,10 +73,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
   leftIcon: {
-    width: moderateScale(20),
-    height: moderateScale(20),
+    position: 'absolute',
+    left: scale(10),
   },
-  pressableContainer: {
+  touchableContainer: {
     width: '100%',
     height: '100%',
     justifyContent: 'center',

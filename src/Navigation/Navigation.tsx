@@ -3,11 +3,20 @@ import { NavigationContainer, createNavigationContainerRef } from '@react-naviga
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import { Screens } from '../Utils/Const'
-import { StartupScreen, DashboardScreen } from '../Screens'
+import {
+  StartupScreen,
+  DashboardScreen,
+  CreateFeedBackScreen,
+  PreviewFeedBackScreen,
+  FeedBackListScreen,
+} from '../Screens'
 
 export type RootStackParamList = {
   StartupScreen: undefined
   Dashboard: undefined
+  CreateFeedBack: undefined
+  PreviewFeedBack: undefined
+  FeedBackList: undefined
 }
 
 export const navigationRef = createNavigationContainerRef<RootStackParamList>()
@@ -23,6 +32,9 @@ const Navigation = () => {
       >
         <Stack.Screen name={Screens.StartupScreen} component={StartupScreen} />
         <Stack.Screen name={Screens.Dashboard} component={DashboardScreen} />
+        <Stack.Screen name={Screens.CreateFeedBack} component={CreateFeedBackScreen} />
+        <Stack.Screen name={Screens.PreviewFeedBack} component={PreviewFeedBackScreen} />
+        <Stack.Screen name={Screens.FeedBackList} component={FeedBackListScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )
