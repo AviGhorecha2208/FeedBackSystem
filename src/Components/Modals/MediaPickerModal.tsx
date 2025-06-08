@@ -228,7 +228,8 @@ const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
       />
       <ConfirmationModal
         showModal={!!showGalleryErrorModal}
-        title={'To use the gallery, please grant permission.'}
+        title={'Need Permission'}
+        subTitle={'Please grant permission to use the gallery.'}
         negativeLabel={'Close'}
         positiveLabel={'Allow'}
         backdropColor={Colors.overlayBlack10}

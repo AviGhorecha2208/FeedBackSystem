@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     gap: scale(10),
-    marginTop: verticalScale(20),
+    marginBottom: verticalScale(20),
   },
   cancelButton: {
     flex: 1,

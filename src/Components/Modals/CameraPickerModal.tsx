@@ -155,7 +155,8 @@ const CameraPickerModal: React.FC<CameraPickerModalProps> = ({
       </ReactNativeModal>
       <ConfirmationModal
         showModal={!!showCameraErrorModal}
-        title={'To use the camera, please grant permission.'}
+        title={'Need Permission'}
+        subTitle={'Please grant permission to use the camera.'}
         negativeLabel={'Close'}
         positiveLabel={'Allow'}
         backdropColor={Colors.overlayBlack10}
@@ -169,7 +170,8 @@ const CameraPickerModal: React.FC<CameraPickerModalProps> = ({
       />
       <ConfirmationModal
         showModal={!!showGalleryErrorModal}
-        title={'To use the gallery, please grant permission.'}
+        title={'Need Permission'}
+        subTitle={'Please grant permission to use the gallery.'}
         negativeLabel={'Close'}
         positiveLabel={'Allow'}
         backdropColor={Colors.overlayBlack10}

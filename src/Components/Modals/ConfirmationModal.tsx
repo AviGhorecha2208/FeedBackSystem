@@ -64,6 +64,7 @@ const ConfirmationModal = ({
             label={negativeLabel ?? 'Cancel'}
             onPress={handleCancel}
             containerStyle={styles.cancelButton}
+            textStyle={{ color: Colors.primary }}
           />
           <CommonButton
             label={positiveLabel ?? 'Okay'}

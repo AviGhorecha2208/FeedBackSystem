@@ -127,7 +127,8 @@ const MediaCapture = ({
       </View>
       <ConfirmationModal
         showModal={!!showCameraErrorModal}
-        title={'To use the camera, please grant permission.'}
+        title={'Need Permission'}
+        subTitle={'Please grant permission to use the camera.'}
         negativeLabel={'Close'}
         positiveLabel={'Allow'}
         backdropColor={Colors.overlayBlack10}
