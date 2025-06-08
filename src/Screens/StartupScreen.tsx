@@ -16,7 +16,7 @@ const StartupScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{'Secret Manager'}</Text>
+      <Text style={styles.title}>{'Feedback System'}</Text>
     </View>
   )
 }
@@ -26,6 +26,8 @@ export default StartupScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%',
+    width: '100%',
     backgroundColor: Colors.background,
     justifyContent: 'center',
     alignItems: 'center',

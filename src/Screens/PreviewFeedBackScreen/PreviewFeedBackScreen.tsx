@@ -56,8 +56,8 @@ const PreviewFeedBackScreen = ({ route }: PreviewFeedBackScreenProps) => {
 
   const renderServices = () => {
     return (
-      <>
-        <Text style={styles.serviceTitle}>{'Select Service'}</Text>
+      <View>
+        <Text style={styles.serviceTitle}>{'Selected Service'}</Text>
         <FlatList
           data={Service}
           renderItem={renderServiceItem}
@@ -67,7 +67,7 @@ const PreviewFeedBackScreen = ({ route }: PreviewFeedBackScreenProps) => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.serviceContentContainer}
         />
-      </>
+      </View>
     )
   }
 
@@ -90,15 +90,15 @@ const PreviewFeedBackScreen = ({ route }: PreviewFeedBackScreenProps) => {
             value={feedback.Address}
           />
           {renderServices()}
-          <StarRating rating={feedback.rating ?? 0} />
+          <StarRating rating={feedback.rating ?? 0} title={'Rating'} />
           <MediaCapture
-            title={'Record Video'}
+            title={'Recorded Video'}
             disabled={true}
             selectedMedia={feedback.selectedMedia}
           />
           <View style={styles.buttonContainer}>
             <CommonButton
-              label={'Go To Dashboard'}
+              label={isFromCreate ? 'Go To Dashboard' : 'Go Back'}
               onPress={onBackPress}
               containerStyle={styles.cancelButton}
             />
