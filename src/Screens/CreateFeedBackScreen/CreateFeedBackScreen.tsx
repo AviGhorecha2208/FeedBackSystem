@@ -1,4 +1,4 @@
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import CommonHeader from '../../Components/CommonHeader'
 import { Colors } from '../../Utils/Colors'
@@ -15,27 +15,17 @@ import CommonButton from '../../Components/CommonButton'
 import { getUniqueId, showToast } from '../../Utils/Utility'
 import { useDispatch } from 'react-redux'
 import { createFeedback } from '../../Store/Feedbacks'
+import { Feedback } from '../../Types/CommonTypes'
 
 interface Service {
   id: number
   name: string
 }
 
-interface Feedback {
-  name: string | null
-  mobileNumber: string | null
-  Address: string | null
-  feedback: string | null
-  service: { id: number; name: string } | null
-  rating: number | null
-  selectedMedia: string | null
-}
-
 const initialFeedbackState: Feedback = {
+  id: null,
   name: null,
   mobileNumber: null,
-  Address: null,
-  feedback: null,
   service: null,
   rating: null,
   selectedMedia: null,
@@ -75,7 +65,6 @@ const CreateFeedBackScreen = () => {
     if (
       !feedback.name ||
       !feedback.mobileNumber ||
-      !feedback.Address ||
       !feedback.service ||
       !feedback.rating ||
       !feedback.selectedMedia
@@ -128,8 +117,8 @@ const CreateFeedBackScreen = () => {
   return (
     <>
       <CommonHeader title={'Create Feedback'} leftIcon={'arrow-left'} onLeftPress={onBackPress} />
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.subContainer}>
+      <View style={styles.container}>
+        <View>
           <CommonTextInput
             label={'Name'}
             placeholder={'Enter Name'}
@@ -144,12 +133,6 @@ const CreateFeedBackScreen = () => {
             maxLength={10}
             onChangeText={(value) => onChangeText('mobileNumber', value)}
           />
-          <CommonTextInput
-            label={'Address'}
-            placeholder={'Enter Address'}
-            value={feedback.Address}
-            onChangeText={(value) => onChangeText('Address', value)}
-          />
           {renderServices()}
           <StarRating
             rating={feedback.rating ?? 0}
@@ -163,20 +146,20 @@ const CreateFeedBackScreen = () => {
             quality={'high'}
             maxDuration={60}
           />
-          <View style={styles.buttonContainer}>
-            <CommonButton
-              label={'Cancel'}
-              onPress={onPressCancel}
-              containerStyle={styles.cancelButton}
-            />
-            <CommonButton
-              label={'Submit'}
-              onPress={onPressSubmit}
-              containerStyle={styles.submitButton}
-            />
-          </View>
         </View>
-      </ScrollView>
+        <View style={styles.buttonContainer}>
+          <CommonButton
+            label={'Cancel'}
+            onPress={onPressCancel}
+            containerStyle={styles.cancelButton}
+          />
+          <CommonButton
+            label={'Submit'}
+            onPress={onPressSubmit}
+            containerStyle={styles.submitButton}
+          />
+        </View>
+      </View>
     </>
   )
 }
@@ -185,14 +168,12 @@ export default CreateFeedBackScreen
 
 const styles = StyleSheet.create({
   container: {
-    minHeight: '100%',
-    backgroundColor: Colors.background,
-  },
-  subContainer: {
     flex: 1,
-    marginTop: verticalScale(20),
+    backgroundColor: Colors.background,
+    justifyContent: 'space-between',
     width: '100%',
     paddingHorizontal: scale(16),
+    paddingTop: verticalScale(20),
   },
   serviceTitle: {
     ...CommonStylesFn.text(3.5, Colors.primary, Fonts.medium),

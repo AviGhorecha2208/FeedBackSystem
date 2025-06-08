@@ -1,16 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { revertAll } from './RevertAll'
+import { Feedback } from '../Types/CommonTypes'
 
-interface Feedback {
-  id: number
-  name: string | null
-  mobileNumber: string | null
-  Address: string | null
-  feedback: string | null
-  service: { id: number; name: string } | null
-  rating: number | null
-  selectedMedia: string | null
-}
+// interface Feedback {
+//   id: number
+//   name: string | null
+//   mobileNumber: string | null
+//   service: { id: number; name: string } | null
+//   rating: number | null
+//   selectedMedia: string | null
+// }
 
 const initialState: {
   feedbacks: Feedback[]

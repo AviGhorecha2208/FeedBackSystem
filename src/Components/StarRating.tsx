@@ -10,9 +10,10 @@ interface StarRatingProps {
   rating: number | null
   onRatingChange?: (rating: number) => void
   title?: string
+  starSize?: number
 }
 
-const StarRating = ({ rating, onRatingChange, title = '' }: StarRatingProps) => {
+const StarRating = ({ rating, onRatingChange, title = '', starSize = 30 }: StarRatingProps) => {
   return (
     <View style={styles.container}>
       {title && <Text style={styles.title}>{title}</Text>}
@@ -25,7 +26,7 @@ const StarRating = ({ rating, onRatingChange, title = '' }: StarRatingProps) => 
           >
             <Icon
               name={(rating ?? 0) >= star ? 'star' : 'star-o'}
-              size={30}
+              size={starSize}
               color={Colors.primary}
             />
           </TouchableOpacity>

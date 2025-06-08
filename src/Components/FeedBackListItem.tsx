@@ -6,59 +6,47 @@ import { Fonts } from '../Utils/Fonts'
 import { moderateScale, scale, verticalScale } from '../Utils/Responsive'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import StarRating from './StarRating'
+import { Feedback } from '../Types/CommonTypes'
 
 interface FeedBackListItemProps {
-  feedback: {
-    id: number
-    name: string | null
-    mobileNumber: string | null
-    Address: string | null
-    feedback: string | null
-    service: { id: number; name: string } | null
-    rating: number | null
-    selectedMedia: string | null
-  }
+  feedback: Feedback
   onPress?: () => void
 }
 
 const FeedBackListItem = ({ feedback, onPress }: FeedBackListItemProps) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
-      {/* Header Section */}
       <View style={styles.header}>
         <View style={styles.serviceTag}>
-          <Icon name={'tag'} size={16} color={Colors.primary} />
+          <Icon name={'tag'} size={18} color={Colors.primary} />
           <Text style={styles.serviceText}>{feedback.service?.name}</Text>
         </View>
-        <StarRating rating={feedback.rating ?? 0} />
+        <StarRating rating={feedback.rating ?? 0} starSize={22} />
       </View>
-
-      {/* Content Section */}
       <View style={styles.content}>
         <View style={styles.userInfo}>
           <View style={styles.infoRow}>
-            <Icon name={'account'} size={20} color={Colors.primary} />
+            <View style={styles.iconContainer}>
+              <Icon name={'account'} size={20} color={Colors.primary} />
+            </View>
             <Text style={styles.infoText} numberOfLines={1}>
               {feedback.name}
             </Text>
           </View>
           <View style={styles.infoRow}>
-            <Icon name={'phone'} size={20} color={Colors.primary} />
+            <View style={styles.iconContainer}>
+              <Icon name={'phone'} size={20} color={Colors.primary} />
+            </View>
             <Text style={styles.infoText}>{feedback.mobileNumber}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Icon name={'map-marker'} size={20} color={Colors.primary} />
-            <Text style={styles.infoText} numberOfLines={2}>
-              {feedback.Address}
-            </Text>
           </View>
         </View>
         {feedback.selectedMedia && (
           <View style={styles.mediaContainer}>
-            <Image source={{ uri: feedback.selectedMedia }} style={styles.mediaPreview} />
-            {/* <View style={styles.playButton}>
-              <Icon name='play' size={24} color={Colors.white} />
-            </View> */}
+            <Image
+              source={{ uri: feedback.selectedMedia }}
+              style={styles.mediaPreview}
+              resizeMode={'cover'}
+            />
           </View>
         )}
       </View>
@@ -71,64 +59,68 @@ export default FeedBackListItem
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.white,
-    borderRadius: moderateScale(10),
-    paddingHorizontal: scale(10),
-    paddingVertical: verticalScale(10),
+    borderRadius: moderateScale(12),
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(14),
     ...CommonStyles.shadow5,
+    marginHorizontal: scale(2),
+    marginVertical: verticalScale(4),
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: verticalScale(10),
+    marginBottom: verticalScale(16),
   },
   serviceTag: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: Colors.accentLight,
-    paddingHorizontal: scale(10),
-    paddingVertical: verticalScale(5),
-    borderRadius: moderateScale(15),
-    gap: scale(5),
+    paddingHorizontal: scale(12),
+    paddingVertical: verticalScale(6),
+    borderRadius: moderateScale(20),
+    gap: scale(6),
   },
   serviceText: {
     ...CommonStylesFn.text(3, Colors.primary, Fonts.medium),
+    letterSpacing: 0.3,
   },
   content: {
     flexDirection: 'row',
-    gap: scale(10),
+    gap: scale(16),
+    alignItems: 'center',
   },
   userInfo: {
     flex: 1,
-    gap: verticalScale(8),
+    gap: verticalScale(12),
   },
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: scale(8),
+    gap: scale(12),
+  },
+  iconContainer: {
+    width: scale(32),
+    height: scale(32),
+    borderRadius: moderateScale(16),
+    backgroundColor: Colors.accentLight,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   infoText: {
     flex: 1,
-    ...CommonStylesFn.text(3, Colors.black, Fonts.regular),
+    ...CommonStylesFn.text(3.2, Colors.black, Fonts.regular),
   },
   mediaContainer: {
-    width: scale(80),
-    height: scale(80),
-    borderRadius: moderateScale(10),
+    width: scale(90),
+    height: scale(90),
+    borderRadius: moderateScale(12),
     overflow: 'hidden',
+    backgroundColor: Colors.accentLight,
+    ...CommonStyles.shadow5,
   },
   mediaPreview: {
     width: '100%',
     height: '100%',
-  },
-  playButton: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: Colors.overlayBlack50,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 })

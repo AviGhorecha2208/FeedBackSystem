@@ -28,7 +28,9 @@ const FeedBackListScreen = () => {
         renderItem={({ item }) => (
           <FeedBackListItem feedback={item} onPress={() => onPressFeedback(item)} />
         )}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) =>
+          `${item?.name}${item.mobileNumber}${item.service?.name}${item.rating}${item.selectedMedia}`
+        }
         contentContainerStyle={styles.listContainer}
       />
     </View>

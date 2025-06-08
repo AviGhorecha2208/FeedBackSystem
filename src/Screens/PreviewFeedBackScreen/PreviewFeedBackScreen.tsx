@@ -1,4 +1,4 @@
-import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import CommonHeader from '../../Components/CommonHeader'
 import { Colors } from '../../Utils/Colors'
@@ -74,8 +74,8 @@ const PreviewFeedBackScreen = ({ route }: PreviewFeedBackScreenProps) => {
   return (
     <>
       <CommonHeader title={'Feedback Preview'} leftIcon={'arrow-left'} onLeftPress={onBackPress} />
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.subContainer}>
+      <View style={styles.container}>
+        <View>
           <CommonTextInput label={'Name'} placeholder={'Enter Name'} value={feedback.name} />
           <CommonTextInput
             label={'Mobile Number'}
@@ -84,11 +84,6 @@ const PreviewFeedBackScreen = ({ route }: PreviewFeedBackScreenProps) => {
             keyboardType={'numeric'}
             maxLength={10}
           />
-          <CommonTextInput
-            label={'Address'}
-            placeholder={'Enter Address'}
-            value={feedback.Address}
-          />
           {renderServices()}
           <StarRating rating={feedback.rating ?? 0} title={'Rating'} />
           <MediaCapture
@@ -96,15 +91,15 @@ const PreviewFeedBackScreen = ({ route }: PreviewFeedBackScreenProps) => {
             disabled={true}
             selectedMedia={feedback.selectedMedia}
           />
-          <View style={styles.buttonContainer}>
-            <CommonButton
-              label={isFromCreate ? 'Go To Dashboard' : 'Go Back'}
-              onPress={onBackPress}
-              containerStyle={styles.cancelButton}
-            />
-          </View>
         </View>
-      </ScrollView>
+        <View style={styles.buttonContainer}>
+          <CommonButton
+            label={isFromCreate ? 'Go To Dashboard' : 'Go Back'}
+            onPress={onBackPress}
+            containerStyle={styles.cancelButton}
+          />
+        </View>
+      </View>
     </>
   )
 }
@@ -113,14 +108,12 @@ export default PreviewFeedBackScreen
 
 const styles = StyleSheet.create({
   container: {
-    minHeight: '100%',
-    backgroundColor: Colors.background,
-  },
-  subContainer: {
     flex: 1,
-    marginTop: verticalScale(20),
+    backgroundColor: Colors.background,
+    justifyContent: 'space-between',
     width: '100%',
     paddingHorizontal: scale(16),
+    paddingTop: verticalScale(20),
   },
   serviceTitle: {
     ...CommonStylesFn.text(3.5, Colors.primary, Fonts.medium),
