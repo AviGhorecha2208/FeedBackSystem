@@ -1,0 +1,11 @@
+{
+  "root": true,
+  "extends": "@react-native",
+  "rules": {
+    "react-native/no-inline-styles": 2,
+    "react-native/no-color-literals": 2,
+    "semi": ["error", "never"],
+    "react/jsx-curly-brace-presence": ["error", { "props": "always", "children": "always" }],
+    "react-native/no-unused-styles": 2
+  }
+}
