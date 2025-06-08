@@ -12,4 +12,31 @@ enum ToastType {
   info = 'info',
 }
 
-export { Screens, ToastType }
+const Service = [
+  {
+    id: 1,
+    name: 'Darshanam',
+  },
+  {
+    id: 2,
+    name: 'Seva',
+  },
+  {
+    id: 3,
+    name: 'Prasadam',
+  },
+  {
+    id: 4,
+    name: 'Annadanam',
+  },
+  {
+    id: 5,
+    name: 'Accomodation',
+  },
+  {
+    id: 6,
+    name: 'General',
+  },
+]
+
+export { Screens, ToastType, Service }

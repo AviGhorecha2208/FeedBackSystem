@@ -2,8 +2,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { revertAll } from './RevertAll'
 
 interface Feedback {
-  id: string
-  feedback: string
+  id: number
+  name: string | null
+  mobileNumber: string | null
+  Address: string | null
+  feedback: string | null
+  service: { id: number; name: string } | null
+  rating: number | null
+  selectedMedia: string | null
 }
 
 const initialState: {
@@ -20,26 +26,21 @@ export const feedbacksSlice = createSlice({
       return initialState
     }),
   reducers: {
-    updateFeedbacks: (
+    createFeedback: (
       state,
       action: PayloadAction<{
-        feedback: string
+        feedback: Feedback
       }>,
     ) => {
-      state.feedbacks = [
-        ...state.feedbacks,
-        {
-          id: crypto.randomUUID(),
-          feedback: action.payload.feedback,
-        },
-      ]
+      state.feedbacks = [...state.feedbacks, action.payload.feedback]
     },
-    deleteFeedback: (state, action: PayloadAction<{ id: string }>) => {
+
+    deleteFeedback: (state, action: PayloadAction<{ id: number }>) => {
       state.feedbacks = state.feedbacks.filter((feedback) => feedback.id !== action.payload.id)
     },
   },
 })
 
-export const { updateFeedbacks } = feedbacksSlice.actions
+export const { createFeedback, deleteFeedback } = feedbacksSlice.actions
 
 export default feedbacksSlice.reducer

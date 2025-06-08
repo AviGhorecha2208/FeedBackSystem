@@ -49,11 +49,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: scale(16),
-    paddingVertical: verticalScale(5),
+    paddingHorizontal: scale(10),
+    paddingVertical: verticalScale(10),
     backgroundColor: Colors.primary,
-    borderBottomWidth: moderateScale(1),
-    borderBottomColor: Colors.primaryLight,
   },
   title: {
     flex: 1,

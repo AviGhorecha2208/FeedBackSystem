@@ -85,20 +85,20 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   modalChildContainer: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.white,
     marginHorizontal: scale(16),
     paddingHorizontal: scale(16),
     borderRadius: moderateScale(10),
     paddingVertical: verticalScale(10),
     borderWidth: moderateScale(1),
-    borderColor: Colors.borderColor,
+    borderColor: Colors.primaryLight,
   },
   title: {
     ...CommonStylesFn.text(4.5, Colors.textPrimary, Fonts.medium),
     marginBottom: verticalScale(10),
     paddingBottom: verticalScale(10),
     borderBottomWidth: moderateScale(1),
-    borderColor: Colors.borderColor,
+    borderColor: Colors.primaryLight,
   },
   subTitle: {
     ...CommonStylesFn.text(3.75, Colors.textPrimary, Fonts.regular),

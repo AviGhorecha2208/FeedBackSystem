@@ -96,8 +96,13 @@ export const getCameraPermission = (functionToCall: () => void) => {
   })
 }
 
+export const getUniqueId = () => {
+  return Math.floor(100000 + Math.random() * 900000)
+}
+
 export const Utility = {
   toastConfig,
   showToast,
   getRandomColor,
+  getUniqueId,
 }

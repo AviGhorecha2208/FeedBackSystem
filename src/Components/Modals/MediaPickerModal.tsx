@@ -12,16 +12,28 @@ import { ToastType } from '../../Utils/Const'
 import ConfirmationModal from './ConfirmationModal'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-interface CameraPickerModalProps {
+type MediaType = 'photo' | 'video' | 'mixed'
+
+interface MediaPickerModalProps {
   isVisible: boolean
   onClose: () => void
-  onImageSelected: (res: ImagePickerResponse) => void
+  onMediaSelected: (res: ImagePickerResponse) => void
+  mediaType?: MediaType
+  title?: string
+  maxDuration?: number
+  quality?: 'low' | 'medium' | 'high'
+  selectionLimit?: number
 }
 
-const CameraPickerModal: React.FC<CameraPickerModalProps> = ({
+const MediaPickerModal: React.FC<MediaPickerModalProps> = ({
   isVisible,
   onClose,
-  onImageSelected,
+  onMediaSelected,
+  mediaType = 'photo',
+  title,
+  maxDuration = 60,
+  quality = 'high',
+  selectionLimit = 1,
 }) => {
   const [showCameraErrorModal, setShowCameraErrorModal] = useState<string>()
   const [showGalleryErrorModal, setShowGalleryErrorModal] = useState<string>()
@@ -31,11 +43,43 @@ const CameraPickerModal: React.FC<CameraPickerModalProps> = ({
     setShowGalleryErrorModal(undefined)
   }
 
+  const getModalTitle = () => {
+    if (title) {
+      return title
+    }
+
+    switch (mediaType) {
+      case 'photo':
+        return 'Select Photo'
+      case 'video':
+        return 'Select Video'
+      case 'mixed':
+        return 'Select Media'
+      default:
+        return 'Select Media'
+    }
+  }
+
+  const getVideoQuality = () => {
+    switch (quality) {
+      case 'low':
+        return 'low'
+      case 'medium':
+        return 'medium'
+      case 'high':
+        return 'high'
+      default:
+        return 'high'
+    }
+  }
+
   const openCamera = () => {
     launchCamera({
-      mediaType: 'photo',
+      mediaType: mediaType === 'mixed' ? 'mixed' : mediaType,
       quality: 1,
       cameraType: 'back',
+      videoQuality: getVideoQuality(),
+      durationLimit: maxDuration,
     })
       .then((res) => {
         if (res.errorCode || res.errorMessage) {
@@ -44,8 +88,8 @@ const CameraPickerModal: React.FC<CameraPickerModalProps> = ({
             `give permission for camera and error code is ${res.errorCode}`,
           )
         } else if (res?.assets) {
-          if (onImageSelected) {
-            onImageSelected(res)
+          if (onMediaSelected) {
+            onMediaSelected(res)
           }
         }
         return []
@@ -88,7 +132,12 @@ const CameraPickerModal: React.FC<CameraPickerModalProps> = ({
   }
 
   const openGallery = () => {
-    launchImageLibrary({ mediaType: 'photo', quality: 1, selectionLimit: 1 })
+    launchImageLibrary({
+      mediaType: mediaType === 'mixed' ? 'mixed' : mediaType,
+      quality: 1,
+      selectionLimit: selectionLimit,
+      videoQuality: getVideoQuality(),
+    })
       .then((res: ImagePickerResponse) => {
         if (res.errorCode || res.errorMessage) {
           showToast(
@@ -96,8 +145,8 @@ const CameraPickerModal: React.FC<CameraPickerModalProps> = ({
             `give permission for gallery and error code is ${res.errorCode}`,
           )
         } else if (res?.assets) {
-          if (onImageSelected) {
-            onImageSelected(res)
+          if (onMediaSelected) {
+            onMediaSelected(res)
           }
         }
       })
@@ -124,6 +173,28 @@ const CameraPickerModal: React.FC<CameraPickerModalProps> = ({
     }
   }
 
+  const getCameraActionText = () => {
+    switch (mediaType) {
+      case 'photo':
+        return 'Take Photo'
+      case 'video':
+        return 'Record Video'
+      default:
+        return 'Capture'
+    }
+  }
+
+  const getGalleryActionText = () => {
+    switch (mediaType) {
+      case 'photo':
+        return 'Choose Photo from Gallery'
+      case 'video':
+        return 'Choose Video from Gallery'
+      default:
+        return 'Choose from Gallery'
+    }
+  }
+
   return (
     <>
       <ReactNativeModal
@@ -137,15 +208,16 @@ const CameraPickerModal: React.FC<CameraPickerModalProps> = ({
         deviceHeight={SCREEN_HEIGHT}
       >
         <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>{'Choose Media'}</Text>
+          <Text style={styles.modalTitle}>{getModalTitle()}</Text>
+
           <TouchableOpacity style={styles.modalOption} onPress={onPressCamera}>
             <Icon name={'camera'} size={24} color={Colors.primary} />
-            <Text style={styles.modalOptionText}>{'Take Photo'}</Text>
+            <Text style={styles.modalOptionText}>{getCameraActionText()}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.modalOption} onPress={openGallery}>
             <Icon name={'image'} size={24} color={Colors.primary} />
-            <Text style={styles.modalOptionText}>{'Choose from Gallery'}</Text>
+            <Text style={styles.modalOptionText}>{getGalleryActionText()}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
@@ -185,7 +257,7 @@ const CameraPickerModal: React.FC<CameraPickerModalProps> = ({
   )
 }
 
-export default CameraPickerModal
+export default MediaPickerModal
 
 const styles = StyleSheet.create({
   modalContainer: {
