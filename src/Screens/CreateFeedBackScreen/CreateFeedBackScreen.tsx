@@ -110,7 +110,7 @@ const CreateFeedBackScreen = () => {
 
   const renderServices = () => {
     return (
-      <>
+      <View>
         <Text style={styles.serviceTitle}>{'Select Service'}</Text>
         <FlatList
           data={Service}
@@ -121,7 +121,7 @@ const CreateFeedBackScreen = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.serviceContentContainer}
         />
-      </>
+      </View>
     )
   }
 
@@ -151,7 +151,11 @@ const CreateFeedBackScreen = () => {
             onChangeText={(value) => onChangeText('Address', value)}
           />
           {renderServices()}
-          <StarRating rating={feedback.rating ?? 0} onRatingChange={onSelectRating} />
+          <StarRating
+            rating={feedback.rating ?? 0}
+            onRatingChange={onSelectRating}
+            title={'Select Rating'}
+          />
           <MediaCapture
             title={'Record Video'}
             selectedMedia={feedback.selectedMedia}

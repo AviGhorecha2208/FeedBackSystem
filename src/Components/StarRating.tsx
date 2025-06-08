@@ -12,10 +12,10 @@ interface StarRatingProps {
   title?: string
 }
 
-const StarRating = ({ rating, onRatingChange, title = 'Select Rating' }: StarRatingProps) => {
+const StarRating = ({ rating, onRatingChange, title = '' }: StarRatingProps) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+      {title && <Text style={styles.title}>{title}</Text>}
       <View style={styles.starsContainer}>
         {[1, 2, 3, 4, 5].map((star) => (
           <TouchableOpacity
@@ -39,12 +39,12 @@ export default StarRating
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: verticalScale(20),
     gap: verticalScale(10),
     alignItems: 'flex-start',
   },
   title: {
     ...CommonStylesFn.text(3.5, Colors.primary, Fonts.medium),
+    marginTop: verticalScale(20),
   },
   starsContainer: {
     flexDirection: 'row',
