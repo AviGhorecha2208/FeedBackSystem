@@ -3,13 +3,13 @@ import { StyleSheet, Text, View } from 'react-native'
 import { Colors } from '../Utils/Colors'
 import { Screens } from '../Utils/Const'
 import { replace } from '../Navigation/NavigationServices'
-import { moderateScale } from '../Utils/Responsive'
+import { heightPx, moderateScale, widthPx } from '../Utils/Responsive'
 import { Fonts } from '../Utils/Fonts'
 
 const StartupScreen = () => {
   useEffect(() => {
     const timeout = setTimeout(() => {
-      replace(Screens.Dashboard)
+      replace(Screens.CreateFeedBack)
       clearTimeout(timeout)
     }, 1000)
   }, [])
@@ -25,9 +25,8 @@ export default StartupScreen
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    height: '100%',
-    width: '100%',
+    height: heightPx(100),
+    width: widthPx(100),
     backgroundColor: Colors.background,
     justifyContent: 'center',
     alignItems: 'center',

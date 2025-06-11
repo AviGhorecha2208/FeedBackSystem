@@ -2,19 +2,17 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native
 import React, { useState } from 'react'
 import CommonHeader from '../../Components/CommonHeader'
 import { Colors } from '../../Utils/Colors'
-import { goBack, navigate } from '../../Navigation/NavigationServices'
 import CommonTextInput from '../../Components/CommonTextInput'
 import { moderateScale, scale, verticalScale } from '../../Utils/Responsive'
-import { Screens, Service, ToastType } from '../../Utils/Const'
+import { Service, ToastType } from '../../Utils/Const'
 import { CommonStylesFn } from '../../Utils/CommonStyles'
 import { Fonts } from '../../Utils/Fonts'
 import StarRating from '../../Components/StarRating'
 import MediaCapture from '../../Components/MediaCapture'
 import { ImagePickerResponse } from 'react-native-image-picker'
 import CommonButton from '../../Components/CommonButton'
-import { getUniqueId, showToast } from '../../Utils/Utility'
-import { useDispatch } from 'react-redux'
-import { createFeedback } from '../../Store/Feedbacks'
+import { showToast } from '../../Utils/Utility'
+
 import { Feedback } from '../../Types/CommonTypes'
 
 interface Service {
@@ -23,7 +21,6 @@ interface Service {
 }
 
 const initialFeedbackState: Feedback = {
-  id: null,
   name: null,
   mobileNumber: null,
   service: null,
@@ -33,14 +30,8 @@ const initialFeedbackState: Feedback = {
 
 const CreateFeedBackScreen = () => {
   const [feedback, setFeedback] = useState(initialFeedbackState)
-
-  const dispatch = useDispatch()
   const onChangeText = (key: keyof typeof initialFeedbackState, value: string | null) => {
     setFeedback({ ...feedback, [key]: value })
-  }
-
-  const onBackPress = () => {
-    goBack()
   }
 
   const onSelectService = (item: (typeof Service)[0]) => {
@@ -57,8 +48,8 @@ const CreateFeedBackScreen = () => {
     }
   }
 
-  const onPressCancel = () => {
-    goBack()
+  const onPressClear = () => {
+    setFeedback(initialFeedbackState)
   }
 
   const onPressSubmit = () => {
@@ -72,9 +63,7 @@ const CreateFeedBackScreen = () => {
       showToast(ToastType.error, 'Please fill all the fields')
       return
     } else {
-      const newFeedback = { ...feedback, id: getUniqueId() }
-      dispatch(createFeedback({ feedback: newFeedback }))
-      navigate(Screens.PreviewFeedBack, { feedback: newFeedback, isFromCreate: true })
+      showToast(ToastType.success, 'Feedback submitted successfully')
     }
   }
 
@@ -97,26 +86,9 @@ const CreateFeedBackScreen = () => {
     )
   }
 
-  const renderServices = () => {
-    return (
-      <View>
-        <Text style={styles.serviceTitle}>{'Select Service'}</Text>
-        <FlatList
-          data={Service}
-          renderItem={renderServiceItem}
-          keyExtractor={(item) => item.id.toString()}
-          numColumns={2}
-          columnWrapperStyle={styles.serviceColumnWrapper}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.serviceContentContainer}
-        />
-      </View>
-    )
-  }
-
   return (
     <>
-      <CommonHeader title={'Create Feedback'} leftIcon={'arrow-left'} onLeftPress={onBackPress} />
+      <CommonHeader title={'Create Feedback'} />
       <View style={styles.container}>
         <View>
           <CommonTextInput
@@ -133,7 +105,16 @@ const CreateFeedBackScreen = () => {
             maxLength={10}
             onChangeText={(value) => onChangeText('mobileNumber', value)}
           />
-          {renderServices()}
+          <Text style={styles.serviceTitle}>{'Select Service'}</Text>
+          <FlatList
+            data={Service}
+            renderItem={renderServiceItem}
+            keyExtractor={(item) => item.id.toString()}
+            numColumns={2}
+            columnWrapperStyle={styles.serviceColumnWrapper}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.serviceContentContainer}
+          />
           <StarRating
             rating={feedback.rating ?? 0}
             onRatingChange={onSelectRating}
@@ -149,8 +130,8 @@ const CreateFeedBackScreen = () => {
         </View>
         <View style={styles.buttonContainer}>
           <CommonButton
-            label={'Cancel'}
-            onPress={onPressCancel}
+            label={'Clear'}
+            onPress={onPressClear}
             containerStyle={styles.cancelButton}
           />
           <CommonButton
