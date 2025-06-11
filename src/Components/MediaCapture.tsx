@@ -2,7 +2,7 @@ import { Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Colors } from '../Utils/Colors'
-import { moderateScale, verticalScale } from '../Utils/Responsive'
+import { moderateScale, scale, verticalScale } from '../Utils/Responsive'
 import { CommonStylesFn } from '../Utils/CommonStyles'
 import { Fonts } from '../Utils/Fonts'
 import { ImagePickerResponse, launchCamera } from 'react-native-image-picker'
@@ -19,12 +19,14 @@ interface MediaCaptureProps {
   onMediaSelected?: (res: ImagePickerResponse) => void
 }
 
+const MAX_DURATION = 60 // 1 minute in seconds
+
 const MediaCapture = ({
   title = 'Record Video',
   selectedMedia,
   disabled,
-  quality,
-  maxDuration,
+  quality = 'high',
+  maxDuration = MAX_DURATION,
   onMediaSelected,
 }: MediaCaptureProps) => {
   const [showCameraErrorModal, setShowCameraErrorModal] = useState<string>()
@@ -33,35 +35,32 @@ const MediaCapture = ({
     setShowCameraErrorModal(undefined)
   }
 
-  const getVideoQuality = () => {
-    switch (quality) {
-      case 'low':
-        return 'low'
-      case 'medium':
-        return 'medium'
-      case 'high':
-        return 'high'
-      default:
-        return 'high'
+  const validateVideo = (response: ImagePickerResponse) => {
+    if (!response.assets?.[0]) {
+      return false
     }
+
+    const video = response.assets[0]
+    if (video.duration && video.duration > maxDuration) {
+      showToast(ToastType.error, `Video should be less than ${maxDuration} seconds`)
+      return false
+    }
+    return true
   }
 
   const openCamera = () => {
     launchCamera({
       mediaType: 'video',
-      quality: 1,
+      quality: 0.8,
       cameraType: 'back',
-      videoQuality: getVideoQuality(),
+      videoQuality: quality,
       durationLimit: maxDuration,
     })
       .then((res) => {
         if (res.errorCode || res.errorMessage) {
-          showToast(
-            ToastType.error,
-            `give permission for camera and error code is ${res.errorCode}`,
-          )
+          showToast(ToastType.error, 'Please provide camera permission to record video')
         } else if (res?.assets) {
-          if (onMediaSelected) {
+          if (validateVideo(res) && onMediaSelected) {
             onMediaSelected(res)
           }
         }
@@ -69,6 +68,7 @@ const MediaCapture = ({
       })
       .catch((err) => {
         console.log('Err: ', err)
+        showToast(ToastType.error, 'Failed to record video')
       })
       .finally(() => {
         clearError()
@@ -105,24 +105,33 @@ const MediaCapture = ({
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.title}>{title}</Text>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.subtitle}>{`(Max ${maxDuration} seconds)`}</Text>
+        </View>
         <View style={styles.captureContainer}>
-          <TouchableOpacity
-            style={styles.captureButton}
-            disabled={disabled}
-            onPress={onPressCamera}
-          >
-            {selectedMedia ? (
-              <View style={styles.selectedMediaContainer}>
+          {selectedMedia ? (
+            <View style={styles.previewRow}>
+              <View style={styles.selectedPreviewContainer}>
                 <Image source={{ uri: selectedMedia }} style={styles.selectedMediaImage} />
               </View>
-            ) : (
-              <>
-                <Icon name={'camera'} size={40} color={Colors.primary} />
-                <Text style={styles.captureText}>{'Click to Record Video'}</Text>
-              </>
-            )}
-          </TouchableOpacity>
+              <TouchableOpacity style={styles.retakeButton} onPress={onPressCamera}>
+                <Icon name={'camera-retake'} size={24} color={Colors.primary} />
+                <Text style={styles.retakeText}>{'Retake'}</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.captureButton}
+                disabled={disabled}
+                onPress={onPressCamera}
+              >
+                <Icon name={'video'} size={32} color={Colors.primary} />
+                <Text style={styles.buttonText}>{'Record Video'}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
       <ConfirmationModal
@@ -148,38 +157,78 @@ export default MediaCapture
 
 const styles = StyleSheet.create({
   container: {
-    height: moderateScale(150),
     marginTop: verticalScale(20),
     gap: verticalScale(10),
-    alignItems: 'flex-start',
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: scale(8),
   },
   title: {
     ...CommonStylesFn.text(3.5, Colors.primary, Fonts.medium),
   },
+  subtitle: {
+    ...CommonStylesFn.text(3, Colors.primary, Fonts.regular),
+  },
   captureContainer: {
     width: '100%',
+    height: verticalScale(120),
     borderWidth: moderateScale(1),
     borderColor: Colors.primary,
     borderStyle: 'dashed',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: moderateScale(10),
     backgroundColor: Colors.accentLight,
+    padding: moderateScale(8),
+  },
+  previewRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: scale(10),
+  },
+  buttonContainer: {
+    // flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   captureButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: verticalScale(10),
+    backgroundColor: Colors.white,
+    padding: scale(12),
+    borderRadius: moderateScale(8),
+    borderWidth: 1,
+    borderColor: Colors.primary,
   },
-  captureText: {
-    ...CommonStylesFn.text(3, Colors.primary, Fonts.regular),
-    marginTop: verticalScale(10),
+  buttonText: {
+    ...CommonStylesFn.text(3, Colors.primary, Fonts.medium),
+    marginTop: verticalScale(4),
   },
-  selectedMediaContainer: {
-    width: moderateScale(100),
-    height: moderateScale(100),
-    borderRadius: moderateScale(10),
+  selectedPreviewContainer: {
+    height: '100%',
+    aspectRatio: 1,
+    borderRadius: moderateScale(8),
     overflow: 'hidden',
+    backgroundColor: Colors.white,
   },
   selectedMediaImage: {
-    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  retakeButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.white,
+    padding: scale(8),
+    borderRadius: moderateScale(8),
+    borderWidth: 1,
+    borderColor: Colors.primary,
+    gap: scale(2),
+  },
+  retakeText: {
+    ...CommonStylesFn.text(2.8, Colors.primary, Fonts.medium),
   },
 })

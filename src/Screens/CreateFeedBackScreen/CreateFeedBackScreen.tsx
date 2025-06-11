@@ -11,9 +11,10 @@ import StarRating from '../../Components/StarRating'
 import MediaCapture from '../../Components/MediaCapture'
 import { ImagePickerResponse } from 'react-native-image-picker'
 import CommonButton from '../../Components/CommonButton'
-import { showToast } from '../../Utils/Utility'
+import { showToast, Utility } from '../../Utils/Utility'
 
-import { Feedback } from '../../Types/CommonTypes'
+import { AddFeedbackPayload, Feedback } from '../../Types/CommonTypes'
+import { addFeedback } from '../../Apis/feedback'
 
 interface Service {
   id: number
@@ -30,7 +31,14 @@ const initialFeedbackState: Feedback = {
 
 const CreateFeedBackScreen = () => {
   const [feedback, setFeedback] = useState(initialFeedbackState)
+
   const onChangeText = (key: keyof typeof initialFeedbackState, value: string | null) => {
+    if (key === 'mobileNumber' && value) {
+      if (!/^[0-9]*$/.test(value)) {
+        showToast(ToastType.error, 'Please enter only numbers')
+        return
+      }
+    }
     setFeedback({ ...feedback, [key]: value })
   }
 
@@ -42,9 +50,13 @@ const CreateFeedBackScreen = () => {
     setFeedback({ ...feedback, rating })
   }
 
-  const onImageSelected = (response: ImagePickerResponse) => {
+  const onMediaSelected = async (response: ImagePickerResponse) => {
     if (response.assets && response.assets[0]) {
       setFeedback({ ...feedback, selectedMedia: response.assets[0].uri ?? null })
+      // const awsResponse = await uploadMediaToAws(response.assets[0])
+      // if (awsResponse) {
+      //   setFeedback({ ...feedback, selectedMedia: awsResponse.alr })
+      // }
     }
   }
 
@@ -52,7 +64,7 @@ const CreateFeedBackScreen = () => {
     setFeedback(initialFeedbackState)
   }
 
-  const onPressSubmit = () => {
+  const onPressSubmit = async () => {
     if (
       !feedback.name ||
       !feedback.mobileNumber ||
@@ -62,8 +74,27 @@ const CreateFeedBackScreen = () => {
     ) {
       showToast(ToastType.error, 'Please fill all the fields')
       return
-    } else {
+    }
+
+    if (!Utility.validateMobileNumber(feedback.mobileNumber)) {
+      showToast(ToastType.error, 'Please enter a valid 10-digit mobile number')
+      return
+    }
+
+    const payload: AddFeedbackPayload = {
+      name: feedback.name,
+      mobileNumber: feedback.mobileNumber,
+      service: feedback.service.name,
+      rating: feedback.rating,
+      videoUrl: feedback.selectedMedia,
+    }
+
+    const response = await addFeedback(payload)
+    if (response) {
       showToast(ToastType.success, 'Feedback submitted successfully')
+      setFeedback(initialFeedbackState)
+    } else {
+      showToast(ToastType.error, 'Failed to submit feedback')
     }
   }
 
@@ -101,7 +132,7 @@ const CreateFeedBackScreen = () => {
             label={'Mobile Number'}
             placeholder={'Enter Mobile Number'}
             value={feedback.mobileNumber}
-            keyboardType={'numeric'}
+            keyboardType={'number-pad'}
             maxLength={10}
             onChangeText={(value) => onChangeText('mobileNumber', value)}
           />
@@ -123,7 +154,7 @@ const CreateFeedBackScreen = () => {
           <MediaCapture
             title={'Record Video'}
             selectedMedia={feedback.selectedMedia}
-            onMediaSelected={onImageSelected}
+            onMediaSelected={onMediaSelected}
             quality={'high'}
             maxDuration={60}
           />
@@ -187,8 +218,9 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary,
     borderWidth: moderateScale(1),
   },
-
   submitButton: {
     flex: 1,
+    borderWidth: moderateScale(1),
+    borderColor: Colors.primary,
   },
 })

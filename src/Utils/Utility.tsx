@@ -96,13 +96,14 @@ export const getCameraPermission = (functionToCall: () => void) => {
   })
 }
 
-export const getUniqueId = () => {
-  return Math.floor(100000 + Math.random() * 900000)
+const validateMobileNumber = (number: string) => {
+  const mobileRegex = /^[0-9]{10}$/
+  return mobileRegex.test(number)
 }
 
 export const Utility = {
   toastConfig,
   showToast,
   getRandomColor,
-  getUniqueId,
+  validateMobileNumber,
 }
